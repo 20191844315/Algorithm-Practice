@@ -13,7 +13,7 @@ public:
         if(n==0){
             return 0;
         }
-        while(fast<n){
+        while(fast<n){//slow和fast在逻辑上分成两个数组，不需要将fast从后往前
             if(nums[fast]!=nums[fast-1]){
                 nums[slow]=nums[fast];
                 ++slow;

@@ -29,7 +29,7 @@ public:
         if(head==nullptr||head->next==nullptr){
             return head;
         }
-        ListNode* dummyHead = new ListNode(0);
+        ListNode* dummyHead = new ListNode(0);//初始化空指针
         dummyHead->next = head;
         ListNode* temp = dummyHead;
         //ListNode* temp =head;设立空的头结点

@@ -4,6 +4,17 @@
         "random": "cpp",
         "vector": "cpp",
         "tuple": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "array": "cpp",
+        "deque": "cpp",
+        "unordered_map": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "ranges": "cpp",
+        "span": "cpp",
+        "text_encoding": "cpp",
+        "limits": "cpp",
+        "algorithm": "cpp",
+        "functional": "cpp"
     }
 }

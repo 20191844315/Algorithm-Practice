@@ -1,0 +1,1 @@
+try {var postMessage = fakePostMessage;} catch(e) {window.console && console.info(e);}

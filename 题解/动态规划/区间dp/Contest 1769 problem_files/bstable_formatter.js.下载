@@ -1,0 +1,399 @@
+// **************************************************
+// bootstrap-table常用formatter
+// **************************************************
+function FormatterIdx(value, row, index, field) {               // 首列自动编号
+    return index + 1;
+}
+function FormatterNoWrap(value, row, index, field) {            // 内部不换行
+    return `<div style="white-space:nowrap;">${value}</div>`;
+}
+function FormatterDomSantize(value, row, index, field) {        // 处理html特殊字符
+    return DomSantize(value)
+}
+function FormatterDel(value, row, index, field) {
+    return "<button class='btn btn-danger'>Delete</button>";
+}
+function FormatterUser(value, row, index, field) {
+    return `<a href='/csgoj/user/userinfo?user_id=${value}' target='_blank'>${value}</a>`;
+}
+function FormatterEdit(value, row, index, field) {          // admin通用的模块edit，需要模块名称模式固定
+    if(row?.edit || !('edit' in row)) {
+        let page_module = window.location.pathname.split('/')[2];
+        return `<a href='/admin/${page_module}/${page_module}_edit?id=${row[page_module + "_id"]}' title='edit'>✏️</a>`;
+    }
+    return '-';
+}
+function FormatterPrivilege(value, row, index, field) {
+    let page_module = window.location.pathname.split('/')[2];
+    return `<a href='/admin/${page_module}/${page_module}_privilege?id=${row[page_module + "_id"]}'>Privilege</a>`;
+}
+function FormatterDelete(value, row, index, field) {        // 通用delete按钮
+    return "<button class='delete_button btn btn-danger'>Delete</button>";
+}
+// ********************
+// /Expsys/Admin Contest
+// ********************
+function FormatterExpContestAdminTitle(value, row, index, field) {
+    return "<a href='/expsys/contest/contest?cid=" + row['contest_id'] + "'>" + value + "</a>";
+}
+function FormatterExpContestAdminEdit(value, row, index, field) {
+    return `<a href='/expsys/admin/contest_edit?id=${row.contest_id}' title='edit'>✏️</a>`;
+}
+function FormatterExpContestAdminCopy(value, row, index, field) {
+    return "<a href='/expsys/admin/contest_copy?id=" + row['contest_id'] + "' title='copy'>📋</a>";
+}
+function FormatterExpContestAdminType(value, row, index, field) {
+    return value == 5 ? `<span title='无附加题'>📝</span>` : `<span title='有附加题'>🧗‍♂️</span>`;
+}
+function FormatterExpContestAdminStatus(value, row, index, field) {
+    return "<button type='button' field='defunct' itemid='" + row['contest_id'] + "' item_name='contest' class='change_status btn " +
+                    (value == '0' ? "btn-success' status='0' >Available" : "btn-warning' status='1' >Reserved") +
+                    "</button>";
+}
+// ********************
+// /Admin/Clss
+// ********************
+// index
+function FormatterClssTitle(value, row, index, field) {
+    if(typeof(value) == 'undefined') {
+        return '-'
+    }
+    return `<a href="/csgoj/clss/stu?clss_id=${row.clss_id}" class="clss_title" title="${row.clss_year} | ${row.clss_semester} | ${value}" >${value}</a>`
+}
+function FormatterClssDel(value, row, index, field) {
+    return "<button class='btn btn-danger'>删除</button>";
+}
+// function FormatterClssArchive(value, row, index, field) {
+//     if(row?.archive || !('archive' in row)) {
+//         return "<button class='btn btn-primary'>归档</button>";
+//     }
+//     return '-';
+// }
+function FormatterClssEdit(value, row, index, field) {
+    return `<button class="btn btn-success" title='edit'>✏️</button>`;
+}
+function FormatterClssYear(value, row, index, field) {
+    return `<a href="#">${value}</a>`;
+}
+function FormatterClssSemester(value, row, index, field) {
+    return `<a href="#">${value}</a>`;
+}
+// clss_add
+function FormatterClssIsAdd(value, row, index, field) {     // 新增 or 修改 clss
+    let cl, tx;
+    if(parseInt(value)) {
+        cl = 'text-danger';
+        tx = '新增';
+    } else {
+        cl = 'text-success';
+        tx = '修改';
+    }
+    return `<span class='${cl}'>${tx}</span>`;
+}
+// clss_commit
+function FormatterClssTeachers(value, row, index, field) {  // 教师工号分行显示
+    if(typeof(value) != 'string') {
+        return '-'
+    }
+    let res_list = [];
+    value.split(',').forEach((item) => {
+        if(item.length != 0) {
+            res_list.push(`<a href="/csgoj/user/userinfo?user_id=${item}" class="clss_teachers" title=${value} target="_blank">${item}</a>`)
+        }
+    })
+    return res_list.join('<br/>');
+}
+
+// ********************
+// /Admin/Contestsummary
+// ********************
+function FormatterFilename(value, row, index) {
+    return "<a href='/admin/contestsummary/download?file=" + value + "'>" + value + "</a>";
+}
+function FormatterFileDelete(value, row, index) {
+    return "<button class='delete_button btn btn-danger'>Delete</button>";
+}
+
+// ********************
+// /Admin/Filemanager
+// ********************
+// js_upload
+function FormatterFileName(value, row, index, field) {
+    return `<a href='${row['file_url']}' filename='${value}'>${value}</a>`;
+}
+function FormatterFileType(value, row, index, field) {
+    if(('file_type' in row) && row.file_type.toLowerCase() == 'import') {
+        return "<button class='fire_button btn btn-success'>Import</button>";
+    } else {
+        return `<button class='copy_button btn btn-success' data-clipboard-text=${row['file_url']}>${value}</button>`;
+    }
+}
+function FormatterFileDelete(value, row, index, field) {
+    if(row?.file_type === 'directory') {
+        return 'Disabled'   
+    }
+    return "<button class='delete_button btn btn-danger'>Delete</button>";
+}
+function FormatterFileRename(value, row, index, field) {
+    if(row?.file_type === 'directory') {
+        return 'Disabled'   
+    }
+    return "<button class='rename_button btn btn-info'>Rename</button>";
+}
+
+
+// ********************
+// /Admin/Problem
+// ********************
+// index
+function FormatterProAttach(value, row, index, field) {
+    return `<a href="/admin/filemanager/filemanager?item=problem&id=${row.problem_id}" target="_blank">Attach</a>`;
+}
+function FormatterProTestData(value, row, index, field) {
+    switch(parseInt(value)) {
+        case 1: return `<a href='/admin/judge/judgedata_manager?item=problem&id=${row.problem_id}' target='_blank'>Data</a>`; 
+        case 2: return `<a href='/csgoj/problemset/testdata?pid=${row.problem_id}' target='_blank'>Data</a>`; ;
+    }
+    return `-`;
+}
+function FormatterProEdit(value, row, index, field) {
+    return parseInt(value) ? `<a href='/admin/problem/problem_edit?id=${row.problem_id}' title='edit'>✏️</a>` : `-`;
+}
+function FormatterProCopy(value, row, index, field) {
+    return "<a href='/admin/problem/problem_copy?id=" + row['problem_id'] + "' title='copy'>📋</a>";
+}
+
+// ********************
+// /Admin/Usermanager
+// ********************
+// index
+function FormatterUsermUserId(value, row, index, field) {
+    return `<a href='/csgoj/user/userinfo?user_id=${value}'>${value}</a>`;
+}
+function FormatterUsermEdit(value, row, index, field) {
+    return "<a href='/csgoj/user/modify?user_id=" + row['user_id'] + "'><button class='btn btn-primary'>Edit</button></a>";
+}
+function FormatterUsermDel(value, row, index, field) {
+    return "<button class='btn btn-danger' user_id='" + row['user_id'] + "'>Delete</button>";
+}
+
+// ********************
+// /Csgoj/Clss
+// ********************
+// stu
+function FormatterStuId(value, row, index) {
+    return "<a href='/csgoj/user/userinfo?user_id=" + row['user_id'] + "'>" + value + "</a>";
+}
+function FormatterStuName(value, row, index) {
+    return value === null ? "[未录入或未登录激活]" : value;
+}
+function FormatterStuDuty(value, row, index) {
+    let dv = parseInt(value);
+    if(isNaN(dv)) {
+        return '';
+    }
+    if(dv & 1) {
+        return "<strong class='text-success'>助教</strong>";
+    }
+}
+function FormatterStuDel(value, row, index) {
+    return "<button class='btn btn-danger' user_id='" + row['user_id'] + "'>双击删除</button>";
+}
+// ********************
+// /Csgoj/Contest
+// ********************
+function FormatterContestTitle(value, row, index, field) {
+    let contest_controller = row.private % 10 == 4 ? 'contestexp' : 'contest';
+    return `<a href='/${typeof(page_module) !== 'undefined' ? page_module : 'csgoj'}/${contest_controller}/problemset?cid=${row.contest_id}' class="contest_title" title="${row.title}">${row.title}</a>`;
+}
+function FormatterContestType(value, row, index, field) {
+    let private = parseInt(value);
+    let attach = Math.floor(private / 10 + 1e-8);
+    let ckind = private % 10;
+    let ckind_str, cl
+    switch(ckind) {
+        case 0: 
+            if(row.password != '') {
+                cl = 'warning'; ckind_str = "<span title='Encrypted'>🔒</span>";
+            } else {
+                cl = 'success'; ckind_str = "<span title='Public'>🌐</span>";
+            }
+            break;
+        case 1: cl = 'danger';  ckind_str = "<span title='Private'>🔑</span>"; break;
+        case 2: cl = 'primary'; ckind_str = "<span title='Standard'>📏</span>"; break;
+        case 4: cl = 'info';    ckind_str = "<span title='习题'>📚</span>"; break;
+        case 5: cl = 'info';    ckind_str = "<span title='考试'>📝</span>"; break;
+    }
+    if(attach) {
+        ckind_str += "<span title='有附加题'>🧗‍♂️</span>";
+    }
+    return `<strong class='text-${cl}'>${ckind_str}</strong>`;
+}
+function FormatterDefunctChange(value, row, index, field) {
+    if(row?.defunct_change || !('defunct_change' in row)) {
+        let cl, wd, sta;
+        if(row.defunct == '0') {
+            cl = 'success';
+            wd = 'Availabe';
+            sta = '0';
+        } else {
+            cl = 'warning';
+            wd = 'Reserved';
+            sta = '1';
+        }
+        let item_name = $('#page_item').val();
+        let item_name_info = item_name && item_name != '' ? `item_name=${item_name}` : '';
+        if(item_name && item_name != '') {
+
+        }
+        // 用对应的id做这一列的data-field，可通用value读取id
+        return `<button 
+            type='button' 
+            field='defunct' 
+            ${item_name_info}
+            itemid='${value}'
+            class='change_status btn btn-${cl}' 
+            status='${sta}'>${wd}
+        </button>`;
+    }
+    return '-';
+}
+function FormatterDefunct(value, row, index, field) {
+    let cl, wd, sta;
+    if(row.defunct == '0') {
+        cl = 'success';
+        title = 'Available';
+        wd = '✅';
+        sta = '0';
+    } else {
+        cl = 'warning';
+        title = 'Reserved'
+        wd = '🔒';
+        sta = '1';
+    }
+    return `<strong class='text-${cl}' title='${title}' status='${sta}'>${wd}</strong>`;
+}
+
+function FormatterContestEdit(value, row, index, field) {
+    if(row?.edit || !('edit' in row)) {
+        return `<a href='/admin/contest/contest_edit?id=${row.contest_id}'>✏️</a>`;
+    }
+    return '-';
+}
+function FormatterContestCopy(value, row, index, field) {
+    return `<a href='/admin/contest/contest_copy?id=${row.contest_id}' title='copy'>📋</a>`;
+}
+function FormatterContestAttach(value, row, index, field) {
+    return `<a href='/admin/filemanager/filemanager?item=contest&id=${row.contest_id}' target='_blank'>Attach</a>`;
+}
+function FormatterContestRejudge(value, row, index, field) {
+    if(row?.rejudge || !('rejudge' in row)) {
+        return `<a href='/csgoj/admin/contest_rejudge?cid=${row.contest_id}' target='_blank'>🔄</a>`;
+    }
+    return '-';
+}
+function FormatterContestTimeStatus(value, row, index, field) {
+    let now_time = $('#page_info').attr('time_stamp');
+    if(typeof(now_time) == 'undefined' || now_time == null || now_time.length == 0) {
+        now_time = new Date().getTime();
+    } else {
+        now_time *= 1000;
+    }
+    now_time = Timestamp2Time(now_time);
+    let ret_class = "", ret_text = "", ret_logo = "";
+    if(now_time < row.start_time) {
+        ret_class = "#66cdaa"; ret_text = "Coming"; ret_logo = "📅";
+    } else if(now_time <= row.end_time) {
+        ret_class = "#ff7f7f";  ret_text = "Running"; ret_logo = "🚀";
+    } else {
+        ret_class = "#87ceeb";    ret_text = "Ended"; ret_logo = "🏁";
+    }
+    return `<strong style='text-shadow: 2px 2px 4px ${ret_class};' title='${ret_text}'>${ret_logo}</strong>`;
+}
+function FormatterContestKind(value, row, index, field) {
+    if(row['private'] % 10 == 0) {
+        return row['has_pass'] ? "<strong class='text-warning'>Encrypted</strong>" : "<strong class='text-success'>Public</strong>";
+    } else if(row['private'] % 10 == 1) {
+        return "<strong class='text-danger'>Private</strong>";
+    } else if(row['private'] % 10 == 2) {
+        return "<strong class='text-primary'>Standard</strong>";
+    } else if(row['private'] % 10 == 5) {
+        return "<strong class='text-info'>Exam</strong>";
+    }
+}
+
+
+
+// ********************
+// /Csgoj/Problemset
+// ********************
+function FormatterProblemAc(value, row, index, field) {
+    if('ac' in row) {
+        return row['ac'] == 1 ? "<span class='text-success'>Y</span>" : "<span class='text-warning'>N</span>";
+    } else {
+        return "";
+    }
+}
+function FormatterProblemTitle(value, row, index, field) {
+    return "<a href='/csgoj/problemset/problem?pid=" + row['problem_id'] +  "'" + (row['spj'] == '1' ? " class='red-link' " : "")  + ">" + value + "</a>";
+}
+function FormatterSource(value, row, index) {
+    let tmpv = value.replace(/(<([^>]+)>)/ig, "");
+    if("<p>" + tmpv + "</p>" == value) {
+        let search_url = "/csgoj/problemset#search=" + tmpv;
+        return "<a href='" + search_url + "'>" + tmpv + "</a>";
+    }
+    return value;
+}
+
+// ********************
+// /Csgoj/Userrank
+// ********************
+function FormatterUrUserId(value, row, index, field) {
+    let tt_info_html = TtFormatter(row.volume, false);
+    return `<a href='/csgoj/user/userinfo?user_id=${value}' class='rank_userid'>${value} <sup title="In School Training Team">${tt_info_html}</sup></a>`;
+}
+function FormatterUrRatio(value, row, index, field) {
+    const submit_num = parseInt(row.submit);
+    const solved_num = parseInt(row.solved);
+    if(!isNaN(submit_num) && !isNaN(solved_num) && submit_num > 0) {
+        return `${(solved_num * 100 / submit_num).toFixed(3)}%`;
+    }
+    return '-';
+}
+function FormatterUrRank(value, row, index, field) {
+    return query_params.offset + index + 1;
+}
+// ********************
+// /Index/News
+// ********************
+function FormatterNewsTitle(value, row, index, field) {
+    return `<a href='/index/${page_category}/detail?nid=${row.news_id}' title='${value}' class='article-title-in-table'>${value}</a>`;
+}
+function FormatterNewsTags(value, row, index, field) {
+    if(value == null) {
+        value = '';
+    }
+    return `<span title='${value}' class='tags-in-table'>${value}</span>`;
+}
+
+// ********************
+// /Ojtool/Rankroll
+// ********************
+function FormatterRrContestTitle(value, row, index, field) {
+    return `<a href='/ojtool/rankroll/rankroll?cid=${row.contest_id}'>${value}</a>`;
+}
+
+// ********************
+// Bs5 Tkind icon
+// ********************
+function FormatterTkindBs5(value, row, index) {
+    let v = value === null ? 0 : value;
+    let icon = "balloon", title_tip = "常规队", txtcolor="text-success";
+    if(v == 1) {
+        icon = "balloon-heart", title_tip = "女队", txtcolor="text-danger";
+    } else if(v == 2) {
+        icon = "star", title_tip = "打星队", txtcolor="text-primary";
+    }
+    return `<i class="${txtcolor} bi bi-${icon}" title="${title_tip}"></i>`;
+}

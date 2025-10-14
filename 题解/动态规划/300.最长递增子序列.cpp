@@ -35,8 +35,8 @@ public:
         return maxres;
     }
 
-    int lengthOfLIS(vector<int>& nums) {
-        int n=nums.size();
+    int lengthOfLIS(vector<int>& a) {
+        int n=a.size();
         //dp[i]存入的是长度为i的递增子序列中，最小的结束元素
         vector<int>dp;
          for(int i=0;i<n;i++){
@@ -48,8 +48,8 @@ public:
                 *it = a[i];
             }
         }
+        return dp.size();
         
-        cout<<dp.size()<<endl;
     }
 };
 // @lc code=end

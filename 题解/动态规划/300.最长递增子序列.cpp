@@ -15,7 +15,8 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    int lengthOfLIS(vector<int>& nums) {
+    //穷举
+    int lengthOfLIS1(vector<int>& nums) {
         int n=nums.size();
         
         int maxres=1;
@@ -26,23 +27,29 @@ public:
                         dp[i]=max(dp[j]+1,dp[i]);
                     }
             }
-            /*
-            if(i>0&&nums[i-1]>=nums[i]){
-                dp[i]=1;
-                
-            }else if(i>0&&nums[i]>nums[i-1]){
-                for(int j=0;j<i;j++){
-                    if(nums[i]>nums[j]){
-                        dp[i]=max(dp[j]+1,dp[i]);
-                    }
-                }
-            }
-            */
+     
             if(dp[i]>maxres){
                 maxres=dp[i];
             }
         }
         return maxres;
+    }
+
+    int lengthOfLIS(vector<int>& nums) {
+        int n=nums.size();
+        //dp[i]存入的是长度为i的递增子序列中，最小的结束元素
+        vector<int>dp;
+         for(int i=0;i<n;i++){
+            //二分查找在dp中第一个>=a[i]小的元素
+            auto it =lower_bound(dp.begin(),dp.end(),a[i]);
+            if(it==dp.end()){
+                dp.push_back(a[i]);
+            }else{
+                *it = a[i];
+            }
+        }
+        
+        cout<<dp.size()<<endl;
     }
 };
 // @lc code=end

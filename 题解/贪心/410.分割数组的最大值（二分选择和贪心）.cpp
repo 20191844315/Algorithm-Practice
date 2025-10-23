@@ -7,6 +7,7 @@
 // @lc code=start
 class Solution {
 public:
+    //检查nums能否被x划分为k份
     bool check(const vector<int>&nums,int x,int k){
         long long sum=0;
         int cnt=1;

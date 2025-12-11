@@ -16,15 +16,14 @@ void dfs(int cur,const vector<int> &nums, vector<int> &res,vector<bool> &visit){
         if(visit[i]){
             continue;
         }
-        //
-        if(i>0&&res[i]==res[i-1]&&visit[i-1])continue;
+        //因为是排序后的数组,所以相同的数肯定在附近，要求不能在前一个相同的数未使用的情况下使用后一个数
+        if(i>0&&nums[i]==nums[i-1]&&!visit[i-1])continue;
         visit[i]=true;
         res[cur]=nums[i];
         dfs(cur+1,nums,res,visit);
         visit[i]=false;
-
-
     }
+    return;
 }
 int main(){
     int n;

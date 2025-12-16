@@ -16,5 +16,6 @@
         "limits": "cpp",
         "algorithm": "cpp",
         "functional": "cpp"
-    }
+    },
+    "C_Cpp.default.compilerPath": "c:\\msys64\\mingw64\\bin\\g++.exe"
 }
